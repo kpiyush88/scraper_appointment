@@ -161,12 +161,14 @@ def print_results(results):
         print(f"  GREY (Yet to open):        {data['GREY_yet_to_open']:2d} days")
         print(f"  GREEN (Available):         {data['GREEN_available']:2d} days")
         
-        total = sum(data.values())
+        total = sum([data['RED_no_service'], data['RED_CROSSED_already_booked'], 
+                     data['GREY_yet_to_open'], data['GREEN_available']])
         print(f"  Total days:                {total:2d}")
         
-        # Add to overall summary
+        # Add to overall summary (exclude GREEN_dates list)
         for key in total_summary:
-            total_summary[key] += data[key]
+            if key in data:
+                total_summary[key] += data[key]
     
     # Print overall summary
     print(f"\n" + "="*70)
