@@ -33,8 +33,8 @@ async def scrape_embassy_appointments():
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
         
-        try:
-            for month, year in months_to_scrape:
+        for month, year in months_to_scrape:
+            try:
                 print(f"\nScraping {month}/{year}...")
                 
                 # Build URL for specific month/year
@@ -125,17 +125,21 @@ async def scrape_embassy_appointments():
                 if not found_dates:
                     print(f"No date elements found for {month_key}")
                 
-                total_dates = sum(results[month_key].values())
+                total_dates = sum([results[month_key]['RED_no_service'], 
+                                   results[month_key]['RED_CROSSED_already_booked'],
+                                   results[month_key]['GREY_yet_to_open'],
+                                   results[month_key]['GREEN_available']])
                 print(f"Completed {month_key}: {total_dates} dates processed")
                 
                 # Small delay between requests
                 await page.wait_for_timeout(2000)
+                
+            except Exception as e:
+                print(f"Error scraping {month}/{year}: {e}")
+                print(f"Continuing to next month...")
+                continue
         
-        except Exception as e:
-            print(f"Error during scraping: {e}")
-        
-        finally:
-            await browser.close()
+        await browser.close()
     
     return results
 
