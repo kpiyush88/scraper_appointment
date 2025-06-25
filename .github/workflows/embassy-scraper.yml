@@ -3,7 +3,7 @@ name: Embassy Appointment Scraper
 on:
   schedule:
     # Run every 5 minutes
-    - cron: '*/10 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch: # Allow manual runs
 
 jobs:
